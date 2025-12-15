@@ -1,0 +1,22 @@
+
+# Build (Alpine)
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+WORKDIR /src
+COPY ./src/ApiUtc/ ./
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app
+
+# Runtime (Alpine)
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
+WORKDIR /app
+
+# Configura UTC e instala curl
+RUN apk add --no-cache tzdata curl &&     cp /usr/share/zoneinfo/Etc/UTC /etc/localtime &&     echo "Etc/UTC" > /etc/timezone
+
+ENV TZ=Etc/UTC
+COPY --from=build /app ./
+
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3   CMD curl -f http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["dotnet", "ApiUtc.dll"]

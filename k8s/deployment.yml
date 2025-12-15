@@ -1,0 +1,31 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-utc
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-utc
+  template:
+    metadata:
+      labels:
+        app: api-utc
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/ceseidl/api-utc:10.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+            - name: ASPNETCORE_URLS
+              value: "http://+:8080"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15

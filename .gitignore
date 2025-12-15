@@ -1,0 +1,16 @@
+
+# Build outputs
+bin/
+obj/
+# Rider/VS/VSCode
+.idea/
+.vscode/
+*.user
+*.suo
+# Docker
+**/.dockerignore
+# Node
+node_modules/
+# OS
+.DS_Store
+Thumbs.db
