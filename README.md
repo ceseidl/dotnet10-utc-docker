@@ -55,6 +55,75 @@ Logs em UTC]
     API --> DB
     API --> Logs
 ```
+## 🔐 Autenticação via HTTPS com Personal Access Token (PAT)
+
+Caso você não utilize SSH, pode autenticar via HTTPS usando um **Personal Access Token**:
+
+### ✅ Como gerar um token Fine-grained no GitHub
+1. Vá em **Settings → Developer settings → Personal access tokens → Fine-grained tokens**.
+2. Clique em **Generate new token**.
+3. Dê um nome (ex.: `dotnet10-utc-docker`), escolha a expiração e selecione os repositórios.
+4. Em **Repository permissions**, marque:
+   - **Contents** → `Read and write` (para push/pull).
+   - Opcional: **Packages** → `Read and write` (para publicar imagens no GHCR).
+5. Clique em **Generate token** e **copie imediatamente**.
+
+### ✅ Como usar no Git
+Quando fizer `git push` via HTTPS, insira:
+```
+Username: seu-usuário (ex.: ceseidl)
+Password: <cole seu token aqui>
+```
+
+Para não pedir toda vez:
+```bash
+git config --global credential.helper store
+```
+
+Depois do primeiro push, as credenciais ficam salvas.
+
+---
+
+## 🔑 Autenticação via SSH no GitHub
+
+A autenticação via SSH é mais segura e evita digitar token toda vez.
+
+### ✅ Como configurar SSH
+1. Gere uma chave SSH:
+```bash
+ssh-keygen -t ed25519 -C "seu-email@dominio.com"
+```
+Pressione Enter para aceitar o caminho padrão (`~/.ssh/id_ed25519`).
+
+2. Adicione a chave ao agente:
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+3. Copie a chave pública:
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+4. Vá no GitHub → **Settings → SSH and GPG keys → New SSH key** → cole a chave.
+
+5. Teste a conexão:
+```bash
+ssh -T git@github.com
+```
+Deve aparecer:
+```
+Hi ceseidl! You've successfully authenticated...
+```
+
+### ✅ Como usar SSH no Git
+Configure o remote:
+```bash
+git remote add origin git@github.com:ceseidl/dotnet10-utc-docker.git
+git branch -M main
+git push -u origin main
+```
 
 ## Referências
 - ASP.NET Core containers (porta 8080): https://mcr.microsoft.com/en-us/product/dotnet/aspnet/about
