@@ -1,6 +1,8 @@
 
 # Evite `DateTime.Now` em produção (.NET 10) — UTC na nuvem (Azure/AWS) e contêineres
 
+Artigo completo: <https://ceseidl.com.br/artigos/evite-datetime-now/>
+
 Em sistemas distribuídos modernos (Azure/AWS, Kubernetes, Docker), usar `DateTime.Now` causa bugs em fusos/DST e dificulta testes. **Regra de ouro**:
 
 > **Armazene em UTC. Exiba em Local.**
